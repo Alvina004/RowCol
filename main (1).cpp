@@ -1,119 +1,48 @@
-//#include "Shablon.h"
-#include "rowcol.h"
-
-#include <string.h>
 #include <iostream>
-#include <algorithm>
-#include <random>
+#include <cstring>
+#include "rowcol.h"
 
 using namespace std;
 
-#define BUF_SIZE  1024
+int main() {
+    unsigned char src[1024], dest[1024], decrypt[1024];
+    unsigned int size, key;
 
-//
-//const char* encode_arr = "1234567890-=!@#$%^&*()_+\
-//qwertyuiop[]QWERTYUIOP{}\
-//asdfghjkl;ASDFGHJKL:\
-//zxcvbnm,./ZXCVBNM<>?";
-//
-//const char* decode_arr = "=-0987654321+_)(*&^%$#@!\
-//][poiuytrewq}{POIUYTREWQ\
-//;lkjhgfdsa:LKJHGFDSA\
-///.,mnbvcxz?><MNBVCXZ";
+    cout << "Enter a string to encrypt: ";
+    cin.getline((char*)src, 1024);
 
+    cout << "Enter the key (number of columns): ";
+    cin >> key;
 
-//unsigned char encode_arr[TemplateSize];
-//unsigned char decode_arr[TemplateSize];
+    size = strlen((const char*)src);
 
-/***
-int InitTemplateKeytable(unsigned char *enc_arr, unsigned char * dec_arr, unsigned int TemplateSize)
-{
-	cout << "\nInitTemplateKeytable\n";
+    rowcol obj;
+    obj.SetKey(key);
 
-	if (!encode_arr || !decode_arr || !TemplateSize)
-		return -1;
-	unsigned int i;
-	for (i = 0; i < TemplateSize; ++i)
-	{
-		dec_arr[i] = encode_arr[i] = i;
-	}
+     if (obj.Encrypt(src, size, dest, size)) {
+        cout << "Failed to encrypt...\n";
+        return -1;
+    }
 
-	// To obtain a time-based seed
-	unsigned seed = 0;
-	shuffle(dec_arr, dec_arr + TemplateSize , default_random_engine(seed));
-	//std::swap(dec_arr[1], dec_arr[128]);
+   dest[size] = '\0';
+    cout << "Encrypted string: " << dest << endl;
 
-	unsigned int hh;
-	for (i = 0; i < TemplateSize; ++i)
-	{
-		if (i == 127)
-		{
-			hh = (unsigned int)encode_arr[i];
-			hh = (unsigned int)encode_arr[i];
+     if (obj.Decrypt(dest, size, decrypt, size)) {
+        cout << "Failed to decrypt...\n";
+        return -2;
+    }
 
-		}
+    decrypt[size] = '\0';
+    cout << "Decrypted string: " << decrypt << endl;
 
-		hh = (unsigned int)encode_arr[i];
-		cout << (unsigned int)encode_arr[i] << ' ';
-	}
+    if (strcmp((const char*)src, (const char*)decrypt)) {
+        cout << "Decryption failed" << endl;
+    } else {
+        cout << "Success" << endl;
+    }
 
-	cout << "\n\nShuffle \n\n";
-
-		for (i = 0; i < TemplateSize; ++i)
-		{
-			cout << (unsigned int)decode_arr[i] << ' ';
-		}
-
-	cout << "\n\nEnd\n\n";
-	return 0;
-
+    return 0;
 }
 
-**/
 
-
-
-int main()
-{
-	unsigned char src[BUF_SIZE], dest[BUF_SIZE] , decrypt[BUF_SIZE];
-
-	std::string str("This is an apple");
-	unsigned int size = (unsigned int)str.size();
-
-	strcpy((char *)src, str.c_str());
-
-	std::cout << "Text to encrypt:\n" << src << endl;
-
-	//InitTemplateKeytable(encode_arr, decode_arr, TemplateSize);
-
-	rowcol obj;
-
-	obj.SetKey(3);
-
-	if (obj.Encrypt(src, size, dest, size))
-	{
-		cout << "Failed to Encrypt...\n";
-		return -1;
-	}
-
-	dest[size] = 0;
-	std::cout << dest << endl;
-	if( obj.Decrypt(dest, size, decrypt, size) )
-	{
-		cout << "Failed to Decrypt...\n";
-		return -2;
-	}
-
-	decrypt[size] = 0;
-	std::cout << decrypt << endl;
-
-	if (strcmp((const char*)src, (const char*)decrypt))
-	{
-		cout << "Failed" << endl;
-	}
-	else
-		cout << "Success" << endl;
-
-	return 0;
-}
 
