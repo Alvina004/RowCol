@@ -1,48 +1,24 @@
 #include <iostream>
-#include <cstring>
-#include "rowcol.h"
-
-using namespace std;
+#include "RowColRle.h"
 
 int main() {
-    unsigned char src[1024], dest[1024], decrypt[1024];
-    unsigned int size, key;
+    RowColRle crypto; 
+    std::string text;
+    unsigned int key;
 
-    cout << "Enter a string to encrypt: ";
-    cin.getline((char*)src, 1024);
+    std::cout << "Enter the text to encrypt: ";
+    std::getline(std::cin, text);
 
-    cout << "Enter the key (number of columns): ";
-    cin >> key;
+    std::cout << "Enter the number of columns for RowCol encryption (key): ";
+    std::cin >> key;
 
-    size = strlen((const char*)src);
+    crypto.setKey(key);
 
-    rowcol obj;
-    obj.SetKey(key);
+    std::string encryptedText = crypto.encrypt(text);
+    std::cout << "Encrypted Text: " << encryptedText << std::endl;
 
-     if (obj.Encrypt(src, size, dest, size)) {
-        cout << "Failed to encrypt...\n";
-        return -1;
-    }
-
-   dest[size] = '\0';
-    cout << "Encrypted string: " << dest << endl;
-
-     if (obj.Decrypt(dest, size, decrypt, size)) {
-        cout << "Failed to decrypt...\n";
-        return -2;
-    }
-
-    decrypt[size] = '\0';
-    cout << "Decrypted string: " << decrypt << endl;
-
-    if (strcmp((const char*)src, (const char*)decrypt)) {
-        cout << "Decryption failed" << endl;
-    } else {
-        cout << "Success" << endl;
-    }
+    std::string decryptedText = crypto.decrypt(encryptedText);
+    std::cout << "Decrypted Text: " << decryptedText << std::endl;
 
     return 0;
 }
-
-
-
